@@ -249,7 +249,7 @@ export default defineNuxtModule({
       const typedRouterOptions: TypedRouterOptions = {
         routesFolder: [],
         dts: declarationFile,
-        logs: nuxt.options.debug && nuxt.options.debug.router,
+        logs: nuxt.options.debug?.router,
         async beforeWriteFiles (rootPage) {
           for (const child of rootPage.children) {
             child.delete()

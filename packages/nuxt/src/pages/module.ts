@@ -64,7 +64,7 @@ export default defineNuxtModule({
   async setup (_options, nuxt) {
     const runtimeDir = resolve(distDir, 'pages/runtime')
 
-    const options = typeof _options === 'boolean' ? { enabled: _options ?? nuxt.options.pages, pattern: `**/*{${nuxt.options.extensions.join(',')}}` } : { ..._options }
+    const options = typeof _options === 'boolean' ? { enabled: _options, pattern: `**/*{${nuxt.options.extensions.join(',')}}` } : { ..._options }
     options.pattern = Array.isArray(options.pattern) ? [...new Set(options.pattern)] : options.pattern
 
     let inlineRulesCache: Record<string, NitroRouteConfig> = {}

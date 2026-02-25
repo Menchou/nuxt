@@ -64,7 +64,7 @@ export default defineNuxtModule({
   async setup (_options, nuxt) {
     const runtimeDir = resolve(distDir, 'pages/runtime')
 
-    const options = typeof _options === 'boolean' ? { enabled: _options ?? nuxt.options.pages, pattern: `**/*{${nuxt.options.extensions.join(',')}}` } : { ..._options }
+    const options = typeof _options === 'boolean' ? { enabled: _options, pattern: `**/*{${nuxt.options.extensions.join(',')}}` } : { ..._options }
     options.pattern = Array.isArray(options.pattern) ? [...new Set(options.pattern)] : options.pattern
 
     let inlineRulesCache: Record<string, NitroRouteConfig> = {}
@@ -249,7 +249,7 @@ export default defineNuxtModule({
       const typedRouterOptions: TypedRouterOptions = {
         routesFolder: [],
         dts: declarationFile,
-        logs: nuxt.options.debug && nuxt.options.debug.router,
+        logs: nuxt.options.debug?.router,
         async beforeWriteFiles (rootPage) {
           for (const child of rootPage.children) {
             child.delete()
@@ -617,8 +617,11 @@ export default defineNuxtModule({
         // Scan and register app/router.options files
         const routerOptionsFiles = await resolveRouterOptions(nuxt, builtInRouterOptions)
 
-        const configRouterOptions = genObjectFromRawEntries(Object.entries(nuxt.options.router.options)
-          .map(([key, value]) => [key, genString(value as string)]))
+        const configRouterOptions = genObjectFromRawEntries(
+          Object.entries(nuxt.options.router.options)
+            .filter(([, value]) => typeof value === 'string')
+            .map(([key, value]) => [key, genString(value)]),
+        )
 
         const hashModes: string[] = []
         for (let index = 0; index < routerOptionsFiles.length; index++) {

@@ -617,8 +617,11 @@ export default defineNuxtModule({
         // Scan and register app/router.options files
         const routerOptionsFiles = await resolveRouterOptions(nuxt, builtInRouterOptions)
 
-        const configRouterOptions = genObjectFromRawEntries(Object.entries(nuxt.options.router.options)
-          .map(([key, value]) => [key, genString(value as string)]))
+        const configRouterOptions = genObjectFromRawEntries(
+          Object.entries(nuxt.options.router.options)
+            .filter(([, value]) => typeof value === 'string')
+            .map(([key, value]) => [key, genString(value)]),
+        )
 
         const hashModes: string[] = []
         for (let index = 0; index < routerOptionsFiles.length; index++) {
